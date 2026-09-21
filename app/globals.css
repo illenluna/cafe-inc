@@ -290,3 +290,57 @@ p:last-child { margin-bottom: 0; }
   .site-header__link::after,
   .admin-nav a::after { transition: none; }
 }
+
+/* ---------- n8n chat widget: brand theming ----------
+   html:root (not :root) so this outranks the widget's own :root
+   rule in its stylesheet, which loads after ours and would win on
+   equal specificity. */
+html:root {
+  --chat--color--primary: var(--oxblood);
+  --chat--color--primary-shade-50: var(--oxblood-2);
+  --chat--color--primary--shade-100: var(--oxblood-2);
+  --chat--color--secondary: var(--olive);
+  --chat--color-secondary-shade-50: var(--olive-2);
+  --chat--color-dark: var(--ink);
+  --chat--color-light: var(--cream);
+  --chat--color-light-shade-50: var(--cream-2);
+  --chat--color-light-shade-100: var(--paper-line);
+  --chat--color-medium: var(--paper-line);
+  --chat--color-white: var(--cream);
+  --chat--font-family: var(--font-body);
+
+  --chat--border-radius: var(--cut-sm);
+  --chat--window--width: 380px;
+  --chat--window--height: 600px;
+  --chat--window--border: 1px solid var(--paper-line);
+
+  --chat--header--background: var(--oxblood);
+  --chat--header--color: var(--cream);
+  --chat--heading--font-size: 1.1rem;
+  --chat--subtitle--font-size: 0.85rem;
+
+  --chat--toggle--background: var(--oxblood);
+  --chat--toggle--hover--background: var(--oxblood-2);
+  --chat--toggle--active--background: var(--oxblood-2);
+  --chat--toggle--color: var(--cream);
+
+  --chat--message--bot--background: var(--cream-2);
+  --chat--message--bot--color: var(--ink);
+  --chat--message--bot--border: 1px solid var(--paper-line);
+  --chat--message--user--background: var(--oxblood);
+  --chat--message--user--color: var(--cream);
+  --chat--message--user--border: none;
+  --chat--message--border-radius: var(--cut-sm);
+
+  --chat--input--border: 1px solid var(--paper-line);
+  --chat--input--border-active: 1px solid var(--oxblood);
+  --chat--input--text-color: var(--ink);
+  --chat--input--send--button--background: var(--oxblood);
+  --chat--input--send--button--color: var(--cream);
+  --chat--input--send--button--background-hover: var(--oxblood-2);
+  --chat--input--send--button--color-hover: var(--cream);
+
+  --chat--body--background: var(--cream);
+  --chat--footer--background: var(--cream-2);
+  --chat--footer--color: var(--ink);
+}

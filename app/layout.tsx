@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Unbounded, Fraunces, Space_Mono } from "next/font/google";
+import { N8nChat } from "@/components/chat/N8nChat";
 import "./globals.css";
 
 const unbounded = Unbounded({
@@ -31,7 +32,10 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       lang="pt-BR"
       className={`${unbounded.variable} ${fraunces.variable} ${spaceMono.variable} h-full antialiased`}
     >
-      <body className="min-h-full flex flex-col">{children}</body>
+      <body className="min-h-full flex flex-col">
+        {children}
+        <N8nChat />
+      </body>
     </html>
   );
 }

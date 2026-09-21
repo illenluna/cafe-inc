@@ -1,0 +1,25 @@
+nome,categoria,descricao,preco,selos
+Espresso,Cafés,"Extraído em 25 segundos, encorpado e intenso.","R$ 6,50",Popular
+Cortado,Cafés,"Partes iguais de espresso e leite vaporizado, em dose curta.","R$ 8,00",
+Cappuccino,Cafés,"Espresso, leite vaporizado e uma camada generosa de espuma.","R$ 9,50",Popular
+Café Coado,Cafés,"Filtrado lentamente na hora do pedido, para um sabor mais limpo.","R$ 7,00",
+Mocha,Cafés,"Espresso com chocolate meio amargo e leite vaporizado.","R$ 11,00",Novo
+Macchiato,Cafés,"Espresso marcado com uma colher de espuma de leite.","R$ 8,50",
+Cold Brew,Bebidas Frias,"Café extraído a frio por 16 horas, servido sobre gelo.","R$ 12,00",Popular
+Iced Latte,Bebidas Frias,"Espresso duplo, leite gelado e cubos de gelo.","R$ 11,50",
+Affogato,Bebidas Frias,"Bola de sorvete de baunilha afogada em espresso quente.","R$ 13,00",Popular
+Chá Gelado de Hibisco,Bebidas Frias,"Infusão floral e levemente ácida, servida com gelo e limão.","R$ 9,00",Vegano
+Frappé de Caramelo,Bebidas Frias,"Café batido com gelo, leite e calda de caramelo.","R$ 14,00",Novo
+Limonada Suíça,Bebidas Frias,"Limão batido inteiro com açúcar e leite condensado.","R$ 10,00",Vegetariano
+Scone de Azeite e Alecrim,Lanches,"Massa amanteigada com azeite, alecrim e flor de sal, assada antes das seis.","R$ 12,00",Popular
+Sanduíche de Presunto e Queijo,Lanches,"Pão australiano, presunto cru, queijo e manteiga de ervas.","R$ 18,00",
+Torrada de Abacate,Lanches,"Pão de fermentação natural, abacate amassado, limão e pimenta.","R$ 16,50",Vegano
+Croissant de Amêndoas,Lanches,"Recheado com creme de amêndoas e finalizado com lascas tostadas.","R$ 14,00",Popular
+Quiche de Espinafre,Lanches,"Massa amanteigada, espinafre refogado e queijo gruyère.","R$ 15,00",Vegetariano
+Pão de Queijo,Lanches,"Assado na hora, quentinho, direto do forno de barro.","R$ 7,50",Sem Glúten
+Brownie de Chocolate 70%,Sobremesas,"Massa densa e úmida, com pedaços de chocolate amargo.","R$ 12,00",Popular
+Cheesecake de Frutas Vermelhas,Sobremesas,"Base de biscoito amanteigado com calda de frutas vermelhas frescas.","R$ 16,00",
+Bolo de Cenoura com Cobertura de Chocolate,Sobremesas,"Receita clássica e fofinha, com cobertura cremosa de chocolate.","R$ 11,00",Popular
+Tiramisù,Sobremesas,"Camadas de biscoito champagne embebido em café e mascarpone.","R$ 17,00",Novo
+Torta de Limão Siciliano,Sobremesas,"Massa crocante, creme cítrico e merengue maçaricado.","R$ 14,50",
+Cookie de Chocolate com Flor de Sal,Sobremesas,"Crocante nas bordas, macio no centro, finalizado com flor de sal.","R$ 8,00",Popular

@@ -1,0 +1,779 @@
+<title>Café Inc. — Web Design Reference</title>
+<meta name="description" content="Brand and web design system for cafe-inc, distilled from the docs/design mood board." />
+<style>
+  :root{
+    --cream:#F1E7D2;
+    --cream-2:#E8DABF;
+    --paper-line:#D8C6A0;
+    --ink:#20140D;
+    --oxblood:#3B1015;
+    --oxblood-2:#4A1519;
+    --olive:#57612E;
+    --olive-2:#4A5326;
+    --rose:#E2A7AC;
+    --sand:#C7A97C;
+
+    --font-display: "Arial Black", "Helvetica Neue", Arial, sans-serif;
+    --font-body: Georgia, "Iowan Old Style", "Palatino Linotype", serif;
+    --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", Menlo, monospace;
+
+    --sp-1: 4px;  --sp-2: 8px;  --sp-3: 12px; --sp-4: 16px;
+    --sp-5: 24px; --sp-6: 32px; --sp-7: 48px; --sp-8: 64px; --sp-9: 96px;
+
+    --cut-sm: 6px;
+    --cut-md: 14px;
+    --cut-lg: 28px;
+
+    --rail-w: 232px;
+  }
+
+  *{box-sizing:border-box;}
+  html{scroll-behavior:smooth;}
+  body{
+    margin:0;
+    background:var(--cream);
+    color:var(--ink);
+    font-family:var(--font-body);
+    -webkit-font-smoothing:antialiased;
+  }
+  img,svg{display:block;max-width:100%;}
+
+  .noise{
+    position:absolute; inset:0; pointer-events:none;
+    opacity:.25;
+    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='120' height='120'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='2' stitchTiles='stitch'/><feColorMatrix type='matrix' values='0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 0.05 0'/></filter><rect width='100%25' height='100%25' filter='url(%23n)'/></svg>");
+    mix-blend-mode:overlay;
+  }
+
+  /* ---------- cut-corner utility (the signature motif) ---------- */
+  .cut{
+    --c: var(--cut-md);
+    clip-path: polygon(
+      var(--c) 0, calc(100% - var(--c)) 0, 100% var(--c),
+      100% calc(100% - var(--c)), calc(100% - var(--c)) 100%, var(--c) 100%,
+      0 calc(100% - var(--c)), 0 var(--c)
+    );
+  }
+  .cut--sm{ --c: var(--cut-sm); }
+  .cut--lg{ --c: var(--cut-lg); }
+
+  /* ---------- layout shell ---------- */
+  .topbar{
+    display:none;
+    position:sticky; top:0; z-index:40;
+    background:var(--ink); color:var(--cream);
+    padding:14px var(--sp-5);
+    align-items:center; justify-content:space-between;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase;
+    border-bottom:1px solid var(--sand);
+  }
+  .topbar__brand{ font-family:var(--font-display); font-weight:900; letter-spacing:-0.02em; font-size:16px; color:var(--cream); text-decoration:none; }
+  .topbar__toggle{
+    background:none; border:1px solid var(--sand); color:var(--cream);
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    padding:6px 10px; cursor:pointer;
+  }
+
+  .rail{
+    position:fixed; top:0; left:0; bottom:0; width:var(--rail-w);
+    background:var(--ink); color:var(--cream);
+    padding:var(--sp-6) var(--sp-5);
+    overflow-y:auto; z-index:30;
+    border-right:1px solid var(--sand);
+  }
+  .rail__brand{
+    display:block; font-family:var(--font-display); font-weight:900;
+    text-transform:uppercase; letter-spacing:-0.02em; font-size:20px;
+    color:var(--cream); text-decoration:none; margin-bottom:var(--sp-2);
+  }
+  .rail__tag{
+    font-family:var(--font-mono); font-size:10.5px; letter-spacing:.1em; text-transform:uppercase;
+    color:var(--sand); display:block; margin-bottom:var(--sp-7);
+  }
+  .rail__list{ list-style:none; margin:0; padding:0; }
+  .rail__item{ margin-bottom:var(--sp-2); }
+  .rail__link{
+    display:flex; gap:10px; align-items:baseline;
+    font-family:var(--font-mono); font-size:12.5px; letter-spacing:.04em; text-transform:uppercase;
+    color:#cbb99a; text-decoration:none; padding:7px 8px; border-left:2px solid transparent;
+  }
+  .rail__num{ color:var(--sand); font-size:11px; }
+  .rail__link:hover{ color:var(--cream); }
+  .rail__link.is-active{ color:var(--rose); border-left-color:var(--rose); background:rgba(226,167,172,.08); }
+
+  .content{ margin-left:var(--rail-w); }
+
+  @media (max-width: 960px){
+    .rail{ display:none; }
+    .content{ margin-left:0; }
+    .topbar{ display:flex; }
+  }
+
+  /* ---------- bands ---------- */
+  .band{ position:relative; padding:var(--sp-9) var(--sp-7); overflow:hidden; }
+  .band__inner{ max-width:1120px; margin:0 auto; position:relative; z-index:1; }
+  .band--cream{ background:var(--cream); color:var(--ink); }
+  .band--ink{ background:var(--ink); color:var(--cream); }
+  .band--oxblood{ background:var(--oxblood); color:var(--cream); }
+
+  @media (max-width: 640px){
+    .band{ padding:var(--sp-7) var(--sp-4); }
+  }
+
+  .eyebrow{
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.14em; text-transform:uppercase;
+    display:flex; align-items:center; gap:10px; margin:0 0 var(--sp-5);
+    opacity:.85;
+  }
+  .eyebrow::before{ content:""; width:22px; height:1px; background:currentColor; opacity:.6; }
+
+  h1,h2,h3,h4{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; letter-spacing:-0.02em; margin:0; }
+  h2{ font-size:clamp(28px, 4vw, 42px); margin-bottom:var(--sp-6); }
+  h3{ font-size:20px; letter-spacing:-0.01em; margin-bottom:var(--sp-2); }
+  p{ line-height:1.65; margin:0 0 var(--sp-4); max-width:60ch; }
+  p:last-child{ margin-bottom:0; }
+  .lede{ font-size:19px; max-width:56ch; }
+
+  /* ---------- hero ---------- */
+  .hero{ padding-top:var(--sp-9); padding-bottom:var(--sp-9); }
+  .hero__plaque{
+    display:inline-block; background:var(--oxblood); color:var(--cream);
+    padding:var(--sp-6) var(--sp-7); margin-bottom:var(--sp-6);
+    border:1px solid var(--sand);
+  }
+  .hero__word{
+    font-family:var(--font-display); font-weight:900; text-transform:uppercase;
+    font-size:clamp(46px, 9vw, 108px); line-height:.92; letter-spacing:-0.03em;
+    margin:0;
+  }
+  .hero__sub{ font-size:20px; max-width:52ch; margin-top:var(--sp-2); }
+  .hero__meta{
+    display:flex; flex-wrap:wrap; gap:var(--sp-6); margin-top:var(--sp-7);
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.06em; text-transform:uppercase; color:var(--sand);
+  }
+
+  /* ---------- principles ---------- */
+  .principles{ display:grid; grid-template-columns:repeat(4,1fr); gap:var(--sp-4); margin-top:var(--sp-7); }
+  @media (max-width:900px){ .principles{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:560px){ .principles{ grid-template-columns:1fr; } }
+  .principle{
+    background:var(--ink); color:var(--cream); padding:var(--sp-5);
+    border:1px solid var(--oxblood);
+  }
+  .principle__num{ font-family:var(--font-mono); font-size:11px; color:var(--rose); letter-spacing:.08em; }
+  .principle h3{ margin-top:var(--sp-2); font-size:16px; }
+  .principle p{ font-size:14.5px; opacity:.85; margin:0; }
+
+  /* ---------- color ---------- */
+  .swatches{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--sp-5); }
+  @media (max-width:760px){ .swatches{ grid-template-columns:repeat(2,1fr); } }
+  @media (max-width:480px){ .swatches{ grid-template-columns:1fr; } }
+  .swatch{ background:var(--cream); color:var(--ink); overflow:hidden; border:1px solid rgba(241,231,210,.35); }
+  .swatch__fill{ height:112px; }
+  .swatch__body{ padding:var(--sp-4); }
+  .swatch__name{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; font-size:15px; letter-spacing:-0.01em; }
+  .swatch__hex{ font-family:var(--font-mono); font-size:12px; opacity:.65; margin-top:2px; }
+  .swatch__use{ font-size:13.5px; margin-top:var(--sp-2); opacity:.8; }
+
+  /* ---------- type specimens ---------- */
+  .specimen{ padding:var(--sp-6) 0; border-top:1px solid var(--paper-line); }
+  .specimen:first-of-type{ border-top:none; padding-top:0; }
+  .specimen__label{ font-family:var(--font-mono); font-size:11.5px; letter-spacing:.1em; text-transform:uppercase; color:var(--oxblood); margin-bottom:var(--sp-3); display:flex; gap:var(--sp-5); }
+  .specimen__display{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; letter-spacing:-0.02em; font-size:56px; line-height:1; }
+  .specimen__body{ font-family:var(--font-body); font-size:19px; max-width:62ch; line-height:1.7; }
+  .specimen__mono{ font-family:var(--font-mono); font-size:14px; letter-spacing:.03em; }
+
+  .scale{ display:flex; flex-direction:column; gap:var(--sp-3); margin-top:var(--sp-6); }
+  .scale__row{ display:flex; align-items:baseline; gap:var(--sp-5); border-top:1px solid var(--paper-line); padding-top:var(--sp-3); }
+  .scale__tag{ font-family:var(--font-mono); font-size:11px; width:110px; flex:none; opacity:.6; text-transform:uppercase; }
+  .scale__sample{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; letter-spacing:-0.02em; }
+
+  /* ---------- mark section ---------- */
+  .mark-grid{ display:grid; grid-template-columns:1.2fr 1fr; gap:var(--sp-8); align-items:start; }
+  @media (max-width:860px){ .mark-grid{ grid-template-columns:1fr; } }
+  .mark-demo{ background:var(--oxblood); padding:var(--sp-8); display:flex; align-items:center; justify-content:center; border:1px solid var(--sand); }
+  .mark-word{ display:flex; gap:var(--sp-2); }
+  .mark-word span{
+    background:var(--cream); color:var(--ink); font-family:var(--font-display); font-weight:900;
+    font-size:34px; padding:10px 14px; text-transform:uppercase; letter-spacing:-0.01em;
+  }
+  .glyph{ width:64px; height:64px; margin:0 auto var(--sp-4); }
+  .misuse-list{ list-style:none; margin:var(--sp-4) 0 0; padding:0; display:grid; gap:10px; }
+  .misuse-list li{ font-size:14px; padding-left:22px; position:relative; opacity:.9; }
+  .misuse-list li::before{ content:"✕"; position:absolute; left:0; color:var(--oxblood); font-family:var(--font-mono); }
+
+  /* ---------- spacing ruler ---------- */
+  .ruler{ display:flex; align-items:flex-end; gap:var(--sp-3); margin-top:var(--sp-6); flex-wrap:wrap; }
+  .ruler__step{ display:flex; flex-direction:column; align-items:center; gap:6px; }
+  .ruler__bar{ background:var(--oxblood); width:20px; }
+  .ruler__label{ font-family:var(--font-mono); font-size:10.5px; opacity:.65; }
+
+  .cut-sizes{ display:flex; gap:var(--sp-5); margin-top:var(--sp-6); flex-wrap:wrap; }
+  .cut-demo{ width:120px; height:90px; background:var(--olive); display:flex; align-items:center; justify-content:center; color:var(--cream); font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.05em; }
+
+  /* ---------- components ---------- */
+  .comp-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--sp-6); }
+  @media (max-width:760px){ .comp-grid{ grid-template-columns:1fr; } }
+  .comp-card{ background:var(--cream); border:1px solid var(--paper-line); padding:var(--sp-6); }
+  .comp-card__label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.1em; text-transform:uppercase; opacity:.6; margin-bottom:var(--sp-4); }
+
+  .btn{
+    display:inline-flex; align-items:center; gap:8px; border:none; cursor:pointer;
+    font-family:var(--font-mono); font-size:13px; letter-spacing:.06em; text-transform:uppercase;
+    padding:14px 22px; transition:transform .15s ease;
+  }
+  .btn:hover{ transform:translateY(-2px); }
+  .btn--primary{ background:var(--ink); color:var(--cream); }
+  .btn--secondary{ background:transparent; color:var(--ink); border:1.5px solid var(--ink); }
+  .btn--ghost{ background:none; color:var(--oxblood); padding-left:0; padding-right:0; text-decoration:underline; text-underline-offset:5px; }
+  .btn-row{ display:flex; gap:var(--sp-4); flex-wrap:wrap; align-items:center; }
+
+  .tag{
+    display:inline-flex; align-items:center; padding:6px 16px 6px 12px;
+    font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase;
+    clip-path:polygon(0 0, calc(100% - 10px) 0, 100% 50%, calc(100% - 10px) 100%, 0 100%);
+  }
+  .tag--olive{ background:var(--olive); color:var(--cream); }
+  .tag--rose{ background:var(--rose); color:var(--ink); }
+  .tag--ink{ background:var(--ink); color:var(--cream); }
+  .tag-row{ display:flex; gap:10px; flex-wrap:wrap; }
+
+  .menu-item{ display:flex; justify-content:space-between; gap:var(--sp-5); padding:var(--sp-4) 0; border-top:1px solid var(--paper-line); }
+  .menu-item:first-child{ border-top:none; }
+  .menu-item__name{ font-family:var(--font-display); font-weight:900; text-transform:uppercase; font-size:15px; letter-spacing:-0.01em; }
+  .menu-item__desc{ font-size:13.5px; opacity:.7; margin-top:3px; max-width:32ch; }
+  .menu-item__price{ font-family:var(--font-mono); font-size:14px; flex:none; }
+
+  .field{ display:flex; flex-direction:column; gap:8px; }
+  .field label{ font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.7; }
+  .field input, .field select, .field textarea{
+    font-family:var(--font-body); font-size:15px; padding:12px 14px;
+    border:1.5px solid var(--ink); background:var(--cream); color:var(--ink);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus{ outline:3px solid var(--rose); outline-offset:2px; }
+  .field select{ appearance:none; background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8'><path d='M1 1l5 5 5-5' fill='none' stroke='%2320140D' stroke-width='1.5'/></svg>"); background-repeat:no-repeat; background-position:right 14px center; padding-right:36px; }
+
+  /* ---------- imagery ---------- */
+  .imagery-grid{ display:grid; grid-template-columns:repeat(3,1fr); gap:var(--sp-5); }
+  @media (max-width:760px){ .imagery-grid{ grid-template-columns:1fr; } }
+  .imagery-tile{ height:220px; position:relative; border:1px solid var(--sand); }
+  .imagery-tile__cap{ position:absolute; left:0; right:0; bottom:0; padding:var(--sp-3) var(--sp-4); font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; text-transform:uppercase; background:rgba(32,20,13,.55); color:var(--cream); }
+  .tile--macro{ background:
+      radial-gradient(circle at 20% 30%, rgba(241,231,210,.5) 0 4px, transparent 5px),
+      radial-gradient(circle at 60% 60%, rgba(241,231,210,.4) 0 6px, transparent 7px),
+      radial-gradient(circle at 80% 20%, rgba(241,231,210,.5) 0 3px, transparent 4px),
+      radial-gradient(circle at 40% 80%, rgba(241,231,210,.35) 0 5px, transparent 6px),
+      linear-gradient(135deg, var(--rose), #cf7f8a); }
+  .tile--pour{ background: linear-gradient(200deg, #1a0f09 0%, var(--ink) 45%, var(--oxblood) 100%); }
+  .tile--pour::after{ content:""; position:absolute; top:0; left:38%; width:10px; height:60%; background:linear-gradient(var(--sand), transparent); opacity:.7; }
+  .tile--room{ background: linear-gradient(160deg, var(--olive-2), var(--olive) 55%, var(--sand)); }
+
+  /* ---------- motion list ---------- */
+  .motion-list{ display:grid; gap:var(--sp-4); margin-top:var(--sp-6); }
+  .motion-row{ display:grid; grid-template-columns:140px 1fr; gap:var(--sp-5); border-top:1px solid var(--paper-line); padding-top:var(--sp-4); }
+  .motion-row:first-child{ border-top:none; padding-top:0; }
+  .motion-row__tag{ font-family:var(--font-mono); font-size:11px; text-transform:uppercase; letter-spacing:.06em; opacity:.6; }
+
+  /* ---------- voice table ---------- */
+  .voice-table{ display:grid; gap:1px; background:var(--sand); margin-top:var(--sp-6); border:1px solid var(--sand); }
+  .voice-row{ display:grid; grid-template-columns:1fr 1fr; gap:1px; }
+  @media (max-width:640px){ .voice-row{ grid-template-columns:1fr; } }
+  .voice-cell{ background:var(--oxblood); padding:var(--sp-4) var(--sp-5); }
+  .voice-cell--bad{ opacity:.6; }
+  .voice-cell__k{ font-family:var(--font-mono); font-size:10.5px; text-transform:uppercase; letter-spacing:.08em; color:var(--rose); margin-bottom:6px; }
+  .voice-cell__v{ font-size:15px; }
+
+  .foot{ padding-top:var(--sp-7); padding-bottom:var(--sp-7); }
+  .foot__row{ display:flex; justify-content:space-between; flex-wrap:wrap; gap:var(--sp-4); font-family:var(--font-mono); font-size:11.5px; letter-spacing:.05em; text-transform:uppercase; color:var(--sand); }
+
+  /* ---------- 10 · site patterns (added after the first build — see section below) ---------- */
+  .pattern-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:var(--sp-6); }
+  @media (max-width:760px){ .pattern-grid{ grid-template-columns:1fr; } }
+
+  .mini-item-card{ background:var(--cream); border:1px solid var(--paper-line); padding:var(--sp-4); display:flex; flex-direction:column; gap:6px; }
+  .mini-item-card__top{ display:flex; justify-content:space-between; }
+
+  .mini-event-card{ background:var(--cream); color:var(--ink); border:1px solid var(--paper-line); padding:var(--sp-4); display:flex; flex-direction:column; gap:6px; }
+
+  .slot-grid{ display:flex; flex-wrap:wrap; gap:8px; }
+  .slot{
+    display:inline-flex; align-items:center; justify-content:center; padding:10px 16px;
+    font-family:var(--font-mono); font-size:12px; letter-spacing:.05em; text-transform:uppercase;
+    background:var(--cream); color:var(--ink); border:1.5px solid var(--ink); cursor:pointer;
+    clip-path:polygon(0 0, calc(100% - 8px) 0, 100% 50%, calc(100% - 8px) 100%, 0 100%);
+  }
+  .slot[aria-pressed="true"]{ background:var(--ink); color:var(--cream); }
+  .slot:disabled{ background:var(--sand); color:var(--ink); opacity:.55; cursor:not-allowed; border-color:var(--sand); text-decoration:line-through; }
+
+  .mini-admin-table{ width:100%; border-collapse:collapse; font-size:13px; background:var(--cream); }
+  .mini-admin-table th, .mini-admin-table td{ text-align:left; padding:8px 10px; border-top:1px solid var(--paper-line); }
+  .mini-admin-table th{ font-family:var(--font-mono); font-size:10.5px; letter-spacing:.06em; text-transform:uppercase; opacity:.6; }
+
+  /* .btn--secondary/.btn--ghost default to ink-on-cream — on dark bands they swap to cream/rose so they stay legible */
+  .band--ink .btn--secondary, .band--oxblood .btn--secondary{ color:var(--cream); border-color:var(--cream); }
+  .band--ink .btn--ghost, .band--oxblood .btn--ghost{ color:var(--rose); }
+
+  @media (prefers-reduced-motion: reduce){
+    html{ scroll-behavior:auto; }
+    .btn{ transition:none; }
+  }
+</style>
+
+<div class="topbar">
+  <a class="topbar__brand" href="#hero">CAFÉ INC.</a>
+  <button class="topbar__toggle" id="tocToggle" aria-expanded="false">Sections</button>
+</div>
+
+<nav class="rail" id="rail" aria-label="Reference sections">
+  <a class="rail__brand" href="#hero">CAFÉ INC.</a>
+  <span class="rail__tag">Design reference / v1.1</span>
+  <ul class="rail__list">
+    <li class="rail__item"><a class="rail__link" data-nav href="#mood"><span class="rail__num">01</span>Mood</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#color"><span class="rail__num">02</span>Color</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#type"><span class="rail__num">03</span>Type</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#mark"><span class="rail__num">04</span>Mark</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#grid"><span class="rail__num">05</span>Grid &amp; spacing</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#components"><span class="rail__num">06</span>Components</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#imagery"><span class="rail__num">07</span>Imagery</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#motion"><span class="rail__num">08</span>Motion</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#voice"><span class="rail__num">09</span>Voice</a></li>
+    <li class="rail__item"><a class="rail__link" data-nav href="#site-patterns"><span class="rail__num">10</span>Site patterns</a></li>
+  </ul>
+</nav>
+
+<main class="content">
+
+  <section class="band band--ink hero" id="hero">
+    <div class="noise"></div>
+    <div class="band__inner">
+      <p class="eyebrow">Web design reference — v1 · cafe-inc</p>
+      <div class="hero__plaque">
+        <h1 class="hero__word">Cut, not<br>curved.</h1>
+      </div>
+      <p class="hero__sub">The visual system for cafe-inc's web presence, distilled from the studio mood board at <code>docs/design/references/1.png</code>: chamfered geometry, oxblood and olive held against warm paper, and one clear ritual per page.</p>
+      <div class="hero__meta">
+        <span>Source · references/1.png</span>
+        <span>Status · draft for build</span>
+        <span>Owner · design</span>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--cream" id="mood">
+    <div class="band__inner">
+      <p class="eyebrow">01 · Mood &amp; principles</p>
+      <h2>What the board is actually saying</h2>
+      <p class="lede">Underneath the espresso shots and cracked-glaze macros, the same four decisions repeat. They're the rules everything below is built from.</p>
+      <div class="principles">
+        <div class="principle">
+          <span class="principle__num">P.01</span>
+          <h3>Cut, not curved</h3>
+          <p>Every corner is chamfered, never rounded. Softness comes from paper color and photography — not border-radius.</p>
+        </div>
+        <div class="principle">
+          <span class="principle__num">P.02</span>
+          <h3>One dark, one bright</h3>
+          <p>Each screen pairs a single deep surface — ink or oxblood — with cream paper. Olive and rose are moves, never backgrounds.</p>
+        </div>
+        <div class="principle">
+          <span class="principle__num">P.03</span>
+          <h3>Type stands at attention</h3>
+          <p>Display type is tight, uppercase, heavy. Body copy is quieter and looser, so the two never compete for the same job.</p>
+        </div>
+        <div class="principle">
+          <span class="principle__num">P.04</span>
+          <h3>Shoot the ritual</h3>
+          <p>Photography favors macro texture and mid-pour motion over static product shots — the moment, not the merchandise.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--oxblood" id="color">
+    <div class="band__inner">
+      <p class="eyebrow">02 · Color</p>
+      <h2>Five surfaces, used on purpose</h2>
+      <p class="lede" style="margin-bottom:var(--sp-7)">Cream carries most of the site. Ink and oxblood are the two dark surfaces — pick one per section, don't mix them in the same view. Olive and rose are accents only: tags, focus states, small fills.</p>
+      <div class="swatches">
+        <div class="swatch">
+          <div class="swatch__fill" style="background:var(--cream)"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Cream</div>
+            <div class="swatch__hex">#F1E7D2</div>
+            <div class="swatch__use">Primary paper. Default background for reading-heavy sections.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__fill" style="background:var(--ink)"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Ink</div>
+            <div class="swatch__hex">#20140D</div>
+            <div class="swatch__use">Darkest surface and default text color on cream. Use for nav, footer, hero.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__fill" style="background:var(--oxblood)"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Oxblood</div>
+            <div class="swatch__hex">#3B1015</div>
+            <div class="swatch__use">Second dark surface — moodier, warmer than ink. Feature sections, plaques.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__fill" style="background:var(--olive)"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Olive</div>
+            <div class="swatch__hex">#57612E</div>
+            <div class="swatch__use">Accent fill for tags and secondary interactive states. Never a full-page background.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__fill" style="background:var(--rose)"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Rose</div>
+            <div class="swatch__hex">#E2A7AC</div>
+            <div class="swatch__use">Warmest accent — focus rings, highlighted links, seasonal tags. Use sparingly.</div>
+          </div>
+        </div>
+        <div class="swatch">
+          <div class="swatch__fill" style="background:var(--sand)"></div>
+          <div class="swatch__body">
+            <div class="swatch__name">Sand</div>
+            <div class="swatch__hex">#C7A97C</div>
+            <div class="swatch__use">Hairline rule and border color on dark surfaces; muted label text.</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--cream" id="type">
+    <div class="band__inner">
+      <p class="eyebrow">03 · Typography</p>
+      <h2>Three jobs, three faces</h2>
+
+      <div class="specimen">
+        <div class="specimen__label"><span>Display</span><span>Unbounded / PP Neue Machina, 800–900</span></div>
+        <div class="specimen__display">Order ahead</div>
+        <p style="margin-top:var(--sp-2); font-size:13.5px; opacity:.7">Uppercase, tight tracking (‑2%), used for headlines and short labels only — never for paragraphs. This document renders it with a system bold sans fallback; specify the weight above in production.</p>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen__label"><span>Body</span><span>Fraunces / Canela, regular &amp; italic</span></div>
+        <p class="specimen__body">A warm, slightly wonky serif for anything meant to be read, not scanned — the story behind a roast, a location note, an about page. It sits quietly next to the loud display face on purpose.</p>
+      </div>
+
+      <div class="specimen">
+        <div class="specimen__label"><span>Utility</span><span>Space Mono / IBM Plex Mono</span></div>
+        <p class="specimen__mono">EYEBROWS · CAPTIONS · PRICES · TIMESTAMPS · 07:30–15:00</p>
+      </div>
+
+      <div class="scale">
+        <div class="scale__row"><span class="scale__tag">H1 / 96·1.0</span><span class="scale__sample" style="font-size:44px">Espresso</span></div>
+        <div class="scale__row"><span class="scale__tag">H2 / 56·1.05</span><span class="scale__sample" style="font-size:32px">Espresso</span></div>
+        <div class="scale__row"><span class="scale__tag">H3 / 32·1.1</span><span class="scale__sample" style="font-size:22px">Espresso</span></div>
+        <div class="scale__row"><span class="scale__tag">Body / 18·1.6</span><span style="font-family:var(--font-body); font-size:18px">Espresso, pulled slow.</span></div>
+        <div class="scale__row"><span class="scale__tag">Caption / 13·mono</span><span style="font-family:var(--font-mono); font-size:13px; letter-spacing:.05em; text-transform:uppercase">Espresso, pulled slow.</span></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--ink" id="mark">
+    <div class="band__inner">
+      <p class="eyebrow">04 · Mark</p>
+      <h2>Wordmark &amp; glyph</h2>
+      <div class="mark-grid">
+        <div>
+          <div class="mark-demo cut">
+            <div class="mark-word">
+              <span>CAFÉ</span><span>INC.</span>
+            </div>
+          </div>
+          <p style="margin-top:var(--sp-4); font-size:13.5px; opacity:.75; max-width:52ch">The wordmark is two solid blocks in cream on oxblood, always chamfered with the standard <code>cut-md</code> value. Clearspace equals the height of one block on every side. Minimum width: 96px — below that, use the glyph alone.</p>
+          <ul class="misuse-list">
+            <li>Don't round the plaque's corners</li>
+            <li>Don't recolor the mark outside cream / oxblood / ink</li>
+            <li>Don't add drop shadows or gradients to the plaque</li>
+            <li>Don't stretch the blocks to fill unrelated widths</li>
+          </ul>
+        </div>
+        <div>
+          <svg class="glyph" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <path d="M14 14 H50 V30 C50 42 42 48 32 48 C22 48 14 42 14 30 Z" fill="#F1E7D2"/>
+            <rect x="29" y="48" width="6" height="10" fill="#F1E7D2"/>
+            <rect x="18" y="58" width="28" height="4" fill="#F1E7D2"/>
+          </svg>
+          <p style="text-align:center; font-family:var(--font-mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; opacity:.7">Cup glyph — favicon &amp; app icon use</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--cream" id="grid">
+    <div class="band__inner">
+      <p class="eyebrow">05 · Grid &amp; spacing</p>
+      <h2>An 8px rhythm, chamfered</h2>
+      <p class="lede">Spacing steps from 4 to 96px cover everything from icon gaps to section padding. Layouts sit on a 12-column grid, 96px max gutter, 1120px content max-width.</p>
+      <div class="ruler">
+        <div class="ruler__step"><div class="ruler__bar" style="height:4px"></div><span class="ruler__label">4</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:8px"></div><span class="ruler__label">8</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:12px"></div><span class="ruler__label">12</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:16px"></div><span class="ruler__label">16</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:24px"></div><span class="ruler__label">24</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:32px"></div><span class="ruler__label">32</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:48px"></div><span class="ruler__label">48</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:64px"></div><span class="ruler__label">64</span></div>
+        <div class="ruler__step"><div class="ruler__bar" style="height:96px"></div><span class="ruler__label">96</span></div>
+      </div>
+
+      <h3 style="margin-top:var(--sp-8)">Cut sizes</h3>
+      <p style="font-size:13.5px; opacity:.75; max-width:52ch">Three chamfer sizes cover every surface — pick by the element's scale, not by feel.</p>
+      <div class="cut-sizes">
+        <div class="cut-demo cut--sm">sm · 6px<br>inputs, tags</div>
+        <div class="cut-demo cut">md · 14px<br>cards, buttons</div>
+        <div class="cut-demo cut--lg">lg · 28px<br>hero plaques</div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--cream" id="components">
+    <div class="band__inner">
+      <p class="eyebrow">06 · Components</p>
+      <h2>Built from the same two rules</h2>
+      <p class="lede" style="margin-bottom:var(--sp-7)">Chamfered corners, mono labels for anything functional. Every interactive element below follows the color pairing rules from section 02.</p>
+
+      <div class="comp-grid">
+        <div class="comp-card cut">
+          <div class="comp-card__label">Buttons</div>
+          <div class="btn-row">
+            <button class="btn btn--primary cut--sm">Start your order</button>
+            <button class="btn btn--secondary cut--sm">See the menu</button>
+            <button class="btn btn--ghost">Read the story</button>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Tags</div>
+          <div class="tag-row">
+            <span class="tag tag--olive">Seasonal</span>
+            <span class="tag tag--rose">New</span>
+            <span class="tag tag--ink">Limited pour</span>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Menu item</div>
+          <div class="menu-item">
+            <div>
+              <div class="menu-item__name">Cortado</div>
+              <div class="menu-item__desc">Equal parts espresso and steamed milk, pulled slow.</div>
+            </div>
+            <div class="menu-item__price">$4.50</div>
+          </div>
+          <div class="menu-item">
+            <div>
+              <div class="menu-item__name">Olive oil scone</div>
+              <div class="menu-item__desc">Rosemary, sea salt, baked before six.</div>
+            </div>
+            <div class="menu-item__price">$3.75</div>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Input field</div>
+          <div class="field">
+            <label for="ref-email">Email</label>
+            <input id="ref-email" type="email" placeholder="you@domain.com" class="cut--sm" />
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--ink" id="imagery">
+    <div class="band__inner">
+      <p class="eyebrow">07 · Imagery</p>
+      <h2>Shoot direction</h2>
+      <p class="lede" style="margin-bottom:var(--sp-7)">Three placeholder textures stand in for real photography. Favor natural light, shallow depth of field, and motion over posed product shots.</p>
+      <div class="imagery-grid">
+        <div class="imagery-tile tile--macro">
+          <div class="imagery-tile__cap">Macro texture — crumb, glaze, steam</div>
+        </div>
+        <div class="imagery-tile tile--pour">
+          <div class="imagery-tile__cap">Pour &amp; motion — dark ground, one warm streak</div>
+        </div>
+        <div class="imagery-tile tile--room">
+          <div class="imagery-tile__cap">Room &amp; ritual — counters, hands, waiting</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--cream" id="motion">
+    <div class="band__inner">
+      <p class="eyebrow">08 · Motion</p>
+      <h2>Quiet by default</h2>
+      <div class="motion-list">
+        <div class="motion-row">
+          <span class="motion-row__tag">Hover</span>
+          <p>Cut-corner cards and buttons lift 2px with no shadow blur increase — a nudge, not a bounce.</p>
+        </div>
+        <div class="motion-row">
+          <span class="motion-row__tag">Links</span>
+          <p>Underline draws in from the left on hover/focus, 150ms ease. No color-only hover states.</p>
+        </div>
+        <div class="motion-row">
+          <span class="motion-row__tag">Page load</span>
+          <p>Hero plaque and headline fade up in one short staggered pass (under 500ms total). Nothing else animates on load.</p>
+        </div>
+        <div class="motion-row">
+          <span class="motion-row__tag">Reduced motion</span>
+          <p>All transitions and entrance animation are removed under <code>prefers-reduced-motion: reduce</code> — content appears instantly, never hidden waiting on JS.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--oxblood" id="voice">
+    <div class="band__inner">
+      <p class="eyebrow">09 · Voice</p>
+      <h2>Say what happens, plainly</h2>
+      <p class="lede" style="margin-bottom:0">Active voice, no filler, tone warm but terse. A button's label carries through to its confirmation.</p>
+      <div class="voice-table">
+        <div class="voice-row">
+          <div class="voice-cell"><div class="voice-cell__k">Use</div><div class="voice-cell__v">"Start your order" → "Order placed"</div></div>
+          <div class="voice-cell voice-cell--bad"><div class="voice-cell__k">Avoid</div><div class="voice-cell__v">"Submit" → "Your request has been received"</div></div>
+        </div>
+        <div class="voice-row">
+          <div class="voice-cell"><div class="voice-cell__k">Use</div><div class="voice-cell__v">"Your cup's empty — add something to sip today."</div></div>
+          <div class="voice-cell voice-cell--bad"><div class="voice-cell__k">Avoid</div><div class="voice-cell__v">"No items found in cart."</div></div>
+        </div>
+        <div class="voice-row">
+          <div class="voice-cell"><div class="voice-cell__k">Use</div><div class="voice-cell__v">"That table's full at 7pm — pick another time."</div></div>
+          <div class="voice-cell voice-cell--bad"><div class="voice-cell__k">Avoid</div><div class="voice-cell__v">"Error: reservation conflict detected."</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="band band--cream" id="site-patterns">
+    <div class="band__inner">
+      <p class="eyebrow">10 · Site patterns</p>
+      <h2>Added during the real build</h2>
+      <p class="lede" style="margin-bottom:var(--sp-7)">The v1 system above didn't anticipate every real page. These patterns were added while building the actual cafe-inc site — they follow the same rules (cut corners, mono labels, one dark surface per section) and should be treated as canonical, not as drift.</p>
+
+      <div class="pattern-grid">
+        <div class="comp-card cut">
+          <div class="comp-card__label">Field — select / textarea / date / time</div>
+          <p style="font-size:13px; opacity:.7; margin-bottom:var(--sp-3)">Section 06 only showed a text input. Forms with real choices (party size, reservation date/time, admin fields) extend <code>.field</code> to selects, textareas, and native date/time inputs with the same border, background, and focus ring — plus a custom chevron on <code>select</code> so its arrow doesn't clash with the chamfered aesthetic.</p>
+          <div class="field">
+            <label for="ref-people">Pessoas</label>
+            <select id="ref-people"><option>2 pessoas</option><option>4 pessoas</option></select>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Dark-band button contrast</div>
+          <p style="font-size:13px; opacity:.7; margin-bottom:var(--sp-3)"><code>.btn--secondary</code> and <code>.btn--ghost</code> use ink-colored text, which nearly disappears on <code>.band--ink</code>/<code>.band--oxblood</code>. On those bands they automatically swap to cream/rose — no new component, just a band-aware override.</p>
+          <div class="btn-row" style="background:var(--oxblood); padding:var(--sp-4)">
+            <button class="btn btn--secondary cut--sm">Secondary</button>
+            <button class="btn btn--ghost">Ghost</button>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Item card — photo menu card</div>
+          <p style="font-size:13px; opacity:.7; margin-bottom:var(--sp-3)">Used for the Home "most-ordered" grid and the full <code>/cardapio</code> page: a photo (or a fallback imagery tile when the real photo isn't sourced yet), name, price, description, and selo tags.</p>
+          <div class="mini-item-card">
+            <div class="imagery-tile tile--macro" style="height:80px; border:none"></div>
+            <div class="mini-item-card__top"><strong>Cortado</strong><span>R$ 8,00</span></div>
+            <span style="font-size:12.5px; opacity:.7">Partes iguais de espresso e leite vaporizado.</span>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Event card</div>
+          <p style="font-size:13px; opacity:.7; margin-bottom:var(--sp-3)">Tasting-session listings on the Home page — date/time, title, description, and capacity, styled like a swatch card sitting on an oxblood band.</p>
+          <div class="mini-event-card">
+            <span style="font-family:var(--font-mono); font-size:11px; text-transform:uppercase; color:var(--oxblood)">04 out · 19:00</span>
+            <strong>Degustação: naturais da Mantiqueira</strong>
+            <span style="font-size:12.5px; opacity:.7">12 vagas</span>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Time-slot picker</div>
+          <p style="font-size:13px; opacity:.7; margin-bottom:var(--sp-3)">Reservation time slots render as toggleable buttons rather than a native <code>&lt;select&gt;</code>, so a full slot can stay visible-but-disabled instead of vanishing from the list — matching the "don't hide the problem" spirit of the Voice section.</p>
+          <div class="slot-grid">
+            <button class="slot" aria-pressed="true">18:00</button>
+            <button class="slot">18:30</button>
+            <button class="slot" disabled>19:00 · Lotado</button>
+          </div>
+        </div>
+
+        <div class="comp-card cut">
+          <div class="comp-card__label">Admin table</div>
+          <p style="font-size:13px; opacity:.7; margin-bottom:var(--sp-3)">The events and reservations lists in <code>/admin</code> use a plain hairline table — mono uppercase headers, no zebra striping, consistent with the rest of the system's restraint.</p>
+          <table class="mini-admin-table">
+            <thead><tr><th>Quando</th><th>Título</th><th>Vagas</th></tr></thead>
+            <tbody><tr><td>04/10 19:00</td><td>Naturais da Mantiqueira</td><td>12</td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <p style="margin-top:var(--sp-7); font-size:13.5px; opacity:.7">Also reused as-is, unchanged: the <code>.principles</code>/<code>.principle</code> grid from section 01 (used again for the About page's "what guides us" values), and <code>.imagery-tile</code> (used for both menu-photo fallbacks and the About page's ambiance visuals). The real site's header/footer are a new, small <code>.site-header</code>/<code>.site-footer</code> component — a horizontal brand + nav + "Reservar" CTA bar — distinct from this document's own sidebar <code>.rail</code>, which only makes sense for a documentation page.</p>
+    </div>
+  </section>
+
+  <footer class="band band--ink foot">
+    <div class="band__inner foot__row">
+      <span>Café Inc. — Web design reference</span>
+      <span>Source · docs/design/references/1.png</span>
+      <span>v1.1 · updated after first build</span>
+    </div>
+  </footer>
+
+</main>
+
+<script>
+  (function(){
+    var toggle = document.getElementById('tocToggle');
+    var rail = document.getElementById('rail');
+    if (toggle && rail) {
+      toggle.addEventListener('click', function(){
+        var open = rail.style.display === 'block';
+        rail.style.display = open ? 'none' : 'block';
+        if (!open) { rail.style.position = 'fixed'; rail.style.width = '100%'; rail.style.zIndex = '50'; }
+        toggle.setAttribute('aria-expanded', String(!open));
+      });
+    }
+
+    var links = Array.prototype.slice.call(document.querySelectorAll('[data-nav]'));
+    var sections = links.map(function(a){ return document.querySelector(a.getAttribute('href')); }).filter(Boolean);
+
+    if ('IntersectionObserver' in window && sections.length) {
+      var map = new Map();
+      sections.forEach(function(sec, i){ map.set(sec, links[i]); });
+      var obs = new IntersectionObserver(function(entries){
+        entries.forEach(function(entry){
+          var link = map.get(entry.target);
+          if (!link) return;
+          if (entry.isIntersecting) {
+            links.forEach(function(l){ l.classList.remove('is-active'); });
+            link.classList.add('is-active');
+          }
+        });
+      }, { rootMargin: '-40% 0px -55% 0px' });
+      sections.forEach(function(sec){ obs.observe(sec); });
+    }
+
+    if (rail) {
+      rail.addEventListener('click', function(e){
+        if (window.matchMedia('(max-width: 960px)').matches && e.target.closest('a')) {
+          rail.style.display = 'none';
+          if (toggle) toggle.setAttribute('aria-expanded', 'false');
+        }
+      });
+    }
+  })();
+</script>

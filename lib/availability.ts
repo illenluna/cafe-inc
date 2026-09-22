@@ -7,7 +7,7 @@ export const OPEN_TIME = "08:00";
 export const CLOSE_TIME = "18:00";
 export const SLOT_MINUTES = 30;
 export const LAST_SEATING_BUFFER_MIN = 60;
-export const CAPACITY_PER_SLOT = 24;
+export const TABLES_PER_SLOT = 6;
 export const CLOSED_WEEKDAY = 1; // Monday, per Date.prototype.getUTCDay()
 export const MAX_PARTY_SIZE = 10;
 

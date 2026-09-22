@@ -4,6 +4,8 @@ import { z } from "zod";
 import { revalidatePath } from "next/cache";
 import { bookReservation } from "@/lib/reservations";
 import { MAX_PARTY_SIZE } from "@/lib/availability";
+import { requireAdmin } from "@/lib/auth";
+import { prisma } from "@/lib/prisma";
 
 const reservationSchema = z.object({
   customerName: z.string().trim().min(2, "Conte seu nome completo."),
@@ -56,4 +58,10 @@ export async function createReservationAction(
 
   revalidatePath("/");
   return { status: "success", message: "Reserva confirmada — te esperamos por lá." };
+}
+
+export async function cancelReservationAction(id: string): Promise<void> {
+  await requireAdmin();
+  await prisma.reservation.update({ where: { id }, data: { status: "CANCELLED" } });
+  revalidatePath("/admin/reservas");
 }

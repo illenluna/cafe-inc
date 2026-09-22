@@ -2,7 +2,7 @@ import type { Reservation } from "@prisma/client";
 import { prisma } from "./prisma";
 import { isoDateToUtcMidnight } from "./dates";
 import {
-  CAPACITY_PER_SLOT,
+  TABLES_PER_SLOT,
   generateDailySlots,
   isOpenDay,
   type DayAvailability,
@@ -15,16 +15,17 @@ export async function getAvailabilityForDate(isoDate: string): Promise<DayAvaila
     return { date: isoDate, closed: true, slots: [] };
   }
 
-  const sums = await prisma.reservation.groupBy({
+  // Each reservation occupies one table, regardless of party size.
+  const counts = await prisma.reservation.groupBy({
     by: ["slot"],
     where: { date: dateUTC, status: "CONFIRMED" },
-    _sum: { partySize: true },
+    _count: { _all: true },
   });
-  const usedBySlot = new Map(sums.map((row) => [row.slot, row._sum.partySize ?? 0]));
+  const usedBySlot = new Map(counts.map((row) => [row.slot, row._count._all]));
 
   const slots = generateDailySlots().map((time) => {
     const used = usedBySlot.get(time) ?? 0;
-    const remaining = Math.max(0, CAPACITY_PER_SLOT - used);
+    const remaining = Math.max(0, TABLES_PER_SLOT - used);
     return { time, remaining, full: remaining <= 0 };
   });
 
@@ -60,16 +61,14 @@ export async function bookReservation(input: BookReservationInput): Promise<Book
 
   try {
     const reservation = await prisma.$transaction(async (tx) => {
-      // Serializes bookings for the same date+slot so two people can't both grab the last seats at once.
+      // Serializes bookings for the same date+slot so two people can't both grab the last table at once.
       await tx.$executeRaw`SELECT pg_advisory_xact_lock(hashtext(${input.date} || ${input.slot}))`;
 
-      const { _sum } = await tx.reservation.aggregate({
+      const used = await tx.reservation.count({
         where: { date: dateUTC, slot: input.slot, status: "CONFIRMED" },
-        _sum: { partySize: true },
       });
-      const used = _sum.partySize ?? 0;
 
-      if (used + input.partySize > CAPACITY_PER_SLOT) {
+      if (used + 1 > TABLES_PER_SLOT) {
         throw new SlotFullError(input.slot);
       }
 

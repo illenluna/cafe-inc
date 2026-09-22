@@ -1,4 +1,5 @@
 import type { Reservation } from "@prisma/client";
+import { cancelReservationAction } from "@/app/actions/reservations";
 
 function formatDate(date: Date): string {
   return new Intl.DateTimeFormat("pt-BR", { dateStyle: "short", timeZone: "UTC" }).format(date);
@@ -19,6 +20,7 @@ export function ReservationsTable({ reservations }: { reservations: Reservation[
           <th>Telefone</th>
           <th>Pessoas</th>
           <th>Status</th>
+          <th aria-label="Ações" />
         </tr>
       </thead>
       <tbody>
@@ -30,6 +32,15 @@ export function ReservationsTable({ reservations }: { reservations: Reservation[
             <td>{reservation.phone}</td>
             <td>{reservation.partySize}</td>
             <td>{reservation.status === "CONFIRMED" ? "Confirmada" : "Cancelada"}</td>
+            <td>
+              {reservation.status === "CONFIRMED" && (
+                <form action={cancelReservationAction.bind(null, reservation.id)}>
+                  <button type="submit" className="btn btn--ghost">
+                    Cancelar
+                  </button>
+                </form>
+              )}
+            </td>
           </tr>
         ))}
       </tbody>
